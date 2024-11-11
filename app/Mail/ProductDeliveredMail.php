@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Order;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -12,18 +13,19 @@ use Illuminate\Queue\SerializesModels;
 class ProductDeliveredMail extends Mailable
 {
     use Queueable, SerializesModels;
-
-    public $product;
-    public $client;
-
-    public function __construct($product, $client)
+    public $order;
+    public function __construct(Order $order)
     {
-        $this->product = $product;
-        $this->client = $client;
+         $this->order = $order;
     }
 
     public function build()
     {
-        return response()->json($this->subject);
+    $this->order->load('product', 'client');
+    return $this->subject('Your Order has been Delivered')
+                ->view('emails.order_delivered')
+                ->with([
+                    'order' => $this->order,
+                ]);
     }
 }

@@ -31,28 +31,17 @@ class OrderController extends Controller
  
      // Seller: Deliver Order
      public function deliverOrder(Request $request)
-    {
-            $order = Order::findOrFail($request);
-            
-            // Ensure the authenticated user is the seller and the order status is valid
-            if (auth()->user()->hasRole('seller') && $order->status === 'pending') {
-                $order->status = 'delivered';
-                $order->save();
-    
-                // Get the product and client details
-                $product = $order->product;
-                $client = $order->client; // Assuming the order has a client relation
-    
-                // Send email to the client
-                Mail::to($client->email)->send(new ProductDeliveredMail($product, $client));
-    
-                return response()->json([
-                    'message' => 'Order delivered and email sent to client.',
-                    'order' => $order,
-                ], 200);
-            }
-    
-            return response()->json(['message' => 'Unauthorized or invalid order status.'], 403);
-        }
-    }
+     {
+
+        $order = Order::findOrFail($request->id);
+        $order->status = 'delivered';
+        $order->save();
+
+    // Send email
+        Mail::to($order->client->email)->send(new ProductDeliveredMail($order));
+
+    return response()->json(['message' => 'Order delivered successfully, email sent to client.',]);
+}
+}
+
    
