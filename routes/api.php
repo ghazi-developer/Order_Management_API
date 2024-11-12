@@ -38,3 +38,5 @@ Route::middleware('auth:sanctum')->post('order', [OrderController::class, 'place
 // Seller - Deliver Order
 Route::middleware('auth:sanctum')->post('order/deliver', [OrderController::class, 'deliverOrder']);
 
+Route::get('order',[OrderController::class,'placeOrder'])->name('view.email');
+

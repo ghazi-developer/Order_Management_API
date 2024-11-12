@@ -34,11 +34,18 @@ class OrderController extends Controller
      {
 
         $order = Order::findOrFail($request->id);
+        $orderDetails = [
+            'id' => $order->id,
+            'created_at' => $order->created_at->format('F j, Y'),
+            'name' => $order->name,
+            'description' => $order->description,
+            'price' => number_format($order->price, ), // Format the total price
+        ];
         $order->status = 'delivered';
         $order->save();
 
     // Send email
-        Mail::to($order->client->email)->send(new ProductDeliveredMail($order));
+        Mail::to($order->client->email)->send(new ProductDeliveredMail($order,$orderDetails));
 
     return response()->json(['message' => 'Order delivered successfully, email sent to client.',]);
 }

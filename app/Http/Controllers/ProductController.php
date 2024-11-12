@@ -22,7 +22,7 @@ class ProductController extends Controller
             $image = $request->file('image');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             // $imagePath = $image->storeAs('public', $imageName, 'public');
-            $image->move(public_path('images'), $imageName);
+            $image->move(public_path('images/'), $imageName);
  // Store the image in public/products
         } else {
             $imagePath = null; // No image provided
@@ -32,7 +32,7 @@ class ProductController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'price' => $request->price,
-            'image' => $request->$imagePath,
+            'image' => $imagePath,
             'seller_id' => auth()->user()->id,
         ]);
 

@@ -14,9 +14,11 @@ class ProductDeliveredMail extends Mailable
 {
     use Queueable, SerializesModels;
     public $order;
-    public function __construct(Order $order)
+    public $orderDetails;
+    public function __construct(Order $order,$orderDetails)
     {
          $this->order = $order;
+         $this->orderDetails = $orderDetails;
     }
 
     public function build()
@@ -26,6 +28,7 @@ class ProductDeliveredMail extends Mailable
                 ->view('emails.order_delivered')
                 ->with([
                     'order' => $this->order,
+                    'orderDetails'=>$this->orderDetails
                 ]);
     }
 }

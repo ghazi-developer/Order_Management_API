@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -42,14 +43,19 @@ class AuthController extends Controller
     }
           // Assign role automatically
           $user->assignRole($request->role);  // Assuming you are using Spatie/Permission package for roles
-  
+            $this->saveUserToFile($user);
           return response()->json([
               'message' => 'User registered successfully',
               'user' => $user,
           ], 201);
       }
       
-  
+      protected function saveUserToFile($user)
+      {
+            $fileName='user_records.txt';
+            $userData="Email: {$user->email} Name:{$user->name}";
+            Storage::append($fileName,$userData);
+      }
       // Login Method
       public function login(Request $request)
       {
